@@ -95,6 +95,9 @@ require_once('classes/functions.php');
   </style>
 </head>
 <body>
+
+<script src="package/dist/sweetalert2.js"></script>>
+
 <?php
 // Output SweetAlert script if set
 if (!empty($sweetAlertConfig)) {
@@ -241,7 +244,7 @@ if (!empty($sweetAlertConfig)) {
         </div>
       </div>
       <button type="button" class="btn btn-secondary mt-3" onclick="prevStep()">Previous</button>
-      <button type="submit" name="multisave" class="btn btn-primary mt-3">Sign Up</button>
+      <button type="submit" name="register" class="btn btn-primary mt-3">Sign Up</button>
       <a class="btn btn-outline-danger mt-3" href="index.php">Go Back</a>
     </div>
   </form>
