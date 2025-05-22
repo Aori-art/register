@@ -1,3 +1,33 @@
+<?php
+require_once 'database.php';
+
+$message = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $title = $_POST['title'] ?? '';
+    $isbn = $_POST['isbn'] ?? '';
+    $pubYear = $_POST['pubYear'] ?? '';
+    $quantity = $_POST['quantity'] ?? '';
+
+
+    if ($title && $isbn && $pubYear && $quantity) {
+        $db = new database();
+        $result = $db->addBook($book_title, $book_isbn, $book_pubyear, $quantity_avail);
+
+        if ($result === true) {
+            $message = '<div class="alert alert-success">Book added successfully!</div>';
+        } else {
+            $message = '<div class="alert alert-danger">Error: ' . htmlspecialchars($result) . '</div>';
+        }
+    } else {
+        $message = '<div class="alert alert-warning">All fields are required.</div>';
+    }
+}
+?>
+
+
+
+
 <!doctype html>
 <html lang="en">
 <head>

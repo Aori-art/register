@@ -9,13 +9,15 @@ class database {
         );
     }
 
-    function signupUser($firstname, $lastname, $birthday, $email, $sex, $phone, $username, $password, $profile_picture_path){
+    function signupUser($user_FN, $user_LN, $user_birthday, $user_email, $user_sex, $user_phone, $user_username, $user_password, $profile_picture_path) {
         $con = $this->opencon();
         try {
             $con->beginTransaction();
-            
-            $stmt = $con->prepare("INSERT INTO Users (user_Fn, user_Ln, user_birthday, user_sex, user_email, user_phone, user_username, user_password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$firstname, $lastname, $birthday, $sex, $email, $phone, $username, $password]);
+
+            $hashedPassword = password_hash($user_password, PASSWORD_DEFAULT);
+
+            $stmt = $con->prepare("INSERT INTO Users (user_FN, user_LN, user_birthday, user_sex, user_email, user_phone, user_username, user_password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$user_FN, $user_LN, $user_birthday, $user_sex, $user_email, $user_phone, $user_username, $hashedPassword]);
 
             $userId = $con->lastInsertId();
 
@@ -30,7 +32,7 @@ class database {
         }
     }
 
-    function insertAddress($userID, $street, $barangay, $city, $province){
+    function insertAddress($userID, $street, $barangay, $city, $province) {
         $con = $this->opencon();
         try {
             $con->beginTransaction();
@@ -50,5 +52,40 @@ class database {
             return false;
         }
     }
+
+    function loginUser($user_username, $user_password) {
+        $con = $this->opencon();
+        $stmt = $con->prepare("SELECT * FROM Users WHERE user_username = ?");
+        $stmt->execute([$user_username]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user && password_verify($user_password, $user['user_password'])) {
+            return $user;
+        } else {
+            return false;
+        }
+    }
+
+    function addBook($title, $isbn, $pubYear, $quantity) {
+    $con = $this->opencon();
+    try {
+        $stmt = $con->prepare("INSERT INTO books (book_title, book_isbn, book_pubyear, quantity_avail) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$title, $isbn, $pubYear, $quantity]);
+        return true;
+    } catch (PDOException $e) {
+        return $e->getMessage();
+    }
+}
+    function addAuthors($author_id, $author_fn, $author_ln, $author_birthday, $author_nat) {
+    $con = $this->opencon();
+    try {
+        $stmt = $con->prepare("INSERT INTO authors (author_id, first_name, last_name, birth_date, nationality) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$author_id, $author_fn, $author_ln, $author_birthday, $author_nat]);
+        return true;
+    } catch (PDOException $e) {
+        return false;
+    }
+}
+
 }
 ?>
