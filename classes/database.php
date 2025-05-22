@@ -76,16 +76,43 @@ class database {
         return $e->getMessage();
     }
 }
-    function addAuthors($author_id, $author_fn, $author_ln, $author_birthday, $author_nat) {
-    $con = $this->opencon();
-    try {
-        $stmt = $con->prepare("INSERT INTO authors (author_id, first_name, last_name, birth_date, nationality) VALUES (?, ?, ?, ?, ?)");
-        $stmt->execute([$author_id, $author_fn, $author_ln, $author_birthday, $author_nat]);
-        return true;
-    } catch (PDOException $e) {
-        return false;
-    }
-}
+     function insertAuthor($firstname, $lastname, $birthday, $nationality) {
+        $con = $this->opencon();
+        try {
+            $con->beginTransaction();
+    
+            // Insert into Address table
+            $stmt = $con->prepare("INSERT INTO authors (author_FN, author_LN, author_birthday, author_nat) VALUES (?, ?, ?, ?)") ;
+            $stmt->execute([$firstname, $lastname, $birthday, $nationality]);
+    
+            // Get the newly inserted address_id
+            $author_id = $con->lastInsertId();
 
+            $con->commit();
+            return $author_id;
+        } catch (PDOException $e) {
+            $con->rollBack();
+            return false;
+        }
+    }
+    function insertGenre($genrename) {
+        $con = $this->opencon();
+        try {
+            $con->beginTransaction();
+    
+            // Insert into Address table
+            $stmt = $con->prepare("INSERT INTO genres (genre_name) VALUES (?)") ;
+            $stmt->execute([$genrename]);
+    
+            // Get the newly inserted address_id
+            $genre_id = $con->lastInsertId();
+
+            $con->commit();
+            return $genre_id;
+        } catch (PDOException $e) {
+            $con->rollBack();
+            return false;
+        }
+    }
 }
 ?>

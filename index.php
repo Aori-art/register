@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 require_once('classes/database.php');
@@ -76,7 +75,7 @@ if (isset($_POST['login'])) {
 
        <script src="./package/dist/sweetalert2.js"></script>
        <?php echo $sweetAlertConfig; ?>
-       
+
     </form>
 
    
