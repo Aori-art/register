@@ -4,45 +4,38 @@ require_once('classes/database.php');
 $sweetAlertConfig = "";
 $con = new database();
 
+
 if (isset($_POST['login'])) {
   $username = $_POST['username'];
   $password = $_POST['password'];
-  
-
 
   $user = $con->loginUser($username, $password);
   if ($user) {
     $_SESSION['user_ID'] = $user['user_id'];
     $_SESSION['user_FN'] = $user['user_FN'];
-    $_SESSION['user_type'] = $user['user_type'];
     
-    $redirectUrl = ($user['user_type'] == 1) ? 'admin_homepage.php' : 'homepage.php';
-
-    $sweetAlertConfig = 
-    "<script>
+    
+    $sweetAlertConfig = " <script>
         Swal.fire({
-          icon: 'success',
-          title: 'Login Successful',
-          text: 'Welcome, " . addslashes(htmlspecialchars($user['user_FN'])) . "!',
-          confirmButtonText: 'Continue'
-        }).then((result) => {
-          if (result.isConfirmed){
-          window.location.href = '$redirectUrl';
-        }
+        icon: 'success',
+        title: 'Login Successful',
+        text: 'Welcome, " . addslashes(htmlspecialchars($user['user_FN'])) . "!',
+        confirmButtonText: 'Continue'
+        }).then(() => {
+        window.location.href = 'admin_homepage.php';
         });
-      </script>";
+        </script>";
+ 
   } else {
-    $sweetAlertConfig = "<script>
-        Swal.fire({
-          icon: 'error',
-          title: 'Login Failed',
-          text: 'Invalid username or password.'
-        });
-      </script>";
+  $sweetAlertConfig = "<script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Login Failed',
+                text: 'Invalid username or password.'
+            });
+        </script> ";
   }
-  
 }
-
 ?>
 
 <!doctype html>
@@ -69,7 +62,6 @@ if (isset($_POST['login'])) {
       </div>
       <button type="submit" name="login" class="btn btn-primary w-100 py-2">Login</button>
       <div class="text-center mt-4">
-        
         <a href="registration.php" class="text-decoration-none">Don't have an account? Register here</a>
       </div>
 

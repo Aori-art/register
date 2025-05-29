@@ -66,6 +66,8 @@ class database {
         }
     }
 
+    
+
     function addBook($title, $isbn, $pubYear, $quantity) {
     $con = $this->opencon();
     try {
@@ -114,5 +116,35 @@ class database {
             return false;
         }
     }
+    
+    function viewAuthors() {
+            $con = $this->opencon();
+            return $con->query("SELECT * FROM Authors")->fetchAll();
+        }
+
+
+    function viewAuthorsID($id) {
+            $con = $this->opencon();
+            $stmt = $con->prepare("SELECT * FROM Authors WHERE author_id = ?");
+            $stmt->execute([$id]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+
+    function updateAuthor($id, $firstname, $lastname, $birthday, $nationality) {
+    try {
+        $con = $this->opencon();
+        $con->beginTransaction();
+        $query = $con->prepare("UPDATE users SET user_firstname=?, user_lastname=?,user_birthday=?, user_sex=?,user_name=?, user_pass=? WHERE id=?");
+        $query->execute([$id, $firstname, $lastname,$birthday, $nationality]);
+        // Update successful
+        $con->commit();
+        return true;
+    } catch (PDOException $e) {
+        // Handle the exception (e.g., log error, return false, etc.)
+         $con->rollBack();
+        return false; // Update failed
+    }
+}
 }
 ?>
