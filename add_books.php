@@ -11,16 +11,44 @@ $sweetAlertConfig = "";
 
 $genres = $con->viewGenres();
 $authors = $con->viewAuthors();
+
+if (isset($_POST['add_book'])){
+  $stitle = $_POST['bookTitle'];
+  $isbn = $_POST['bookISBN'];
+  $pubyear = $_POST['bookyear'];
+  $quantity = $_POST['bookQuantity'];
+
+  
+  $genre_ids = isset($_POST['bookGenres']) ? $_POST
+  ['bookGenres'] : [];
+
+  $author_ids = isset($_POST['bookAuthors']) ? $_POST
+  ['bookAuthors'] : [];
+
+  $result = $con->addBook($title, $isbn, $pubyear, $quantity, $genre_ids, $author_ids);
+
+  if ($result){
+    $sweetAlertConfig = "<script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Book has been added auccessfully',
+                    text: 'The new book has been added successfully.',
+                    confirmButtonText: 'Continue'
+                }).then(() => {
+                    window.location.href = 'admin_homepage.php';
+                });
+            </script>";
+  } else {
+  $sweetAlertConfig = "<script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Something went wrong',
+                text: 'Please try again.'
+            });
+        </script> ";
+  }
+}
 ?>
-
-
-<?php
-
-?>
-
-
-
-
 
 
 <!doctype html>
@@ -88,7 +116,7 @@ $authors = $con->viewAuthors();
       <label for="bookGenres" class="form-label">Genres</label>
 
 
-      <class="form-select" id="bookGenres" name=""bookGenres[]" multiple required>
+      <select class="form-select" id="bookGenres" name="bookGenres[]" multiple required>
         <?php foreach ($genres as $genre):?>
         <option value="<?php echo $genre['genre_id']; ?>"><?php
           echo htmlspecialchars($genre['genre_name']); 
@@ -112,7 +140,10 @@ $authors = $con->viewAuthors();
       <input type="number" class="form-control" id="bookQuantity" required>
     </div>
 
-    <button type="submit" class="btn btn-primary">Add Book</button>
+    <button type="submit" name="add_book" class="btn btn-primary">Add Book</button>
+  
+    <script src="./package/dist/sweetalert2.js"></script>
+    <?php echo $sweetAlertConfig; ?>
   </form>
 </div>
 <script src="./bootstrap-5.3.3-dist/js/bootstrap.js"></script>
