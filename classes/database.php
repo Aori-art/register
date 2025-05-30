@@ -173,34 +173,32 @@ class database {
     function addBooks($title, $isbn, $pubyear, $quantity, $genre_ids = [], $author_ids = []){
         $con = $this->opencon();
         try {
+            echo 'fd';
             $con->beginTransaction();
 
-            $stmt = $con->prepare("INSERT INTO Books (book_title, book_isbn, book_pubyear, book_avail) VALUES (?,?,?,?)");
+            $stmt = $con->prepare("INSERT INTO books (book_title, book_isbn, book_pubyear, quantity_avail) VALUES (?,?,?,?)");
             $stmt->execute([$title, $isbn, $pubyear, $quantity]);
             $book_id = $con->lastInsertId();
 
-            $stmt = $con->prepare("INSERT INTO Books (book_title, book_isbn, book_pubyear, book_avail) VALUES (?,?,?,?)");
-            $stmt->execute([$genre_ids, $book_id]);
-
             foreach ($genre_ids as $genre_id) {
-                $stmt = $con->prepare("INSERT INTO Genre_Books (genre_id, book_id) VALUES (?,?)");
+                $stmt = $con->prepare("INSERT INTO genre_books (genre_id, book_id) VALUES (?,?)");
                 $stmt->execute([$genre_id, $book_id]);
             }
 
             foreach ($author_ids as $author_id) {
-                $stmt = $con->prepare("INSERT INTO Book_authors (book_id, author_id) VALUES (?,?)");
-                $stmt->execute([$author_id, $book_id]);
+                $stmt = $con->prepare("INSERT INTO book_authors (book_id, author_id) VALUES (?,?)");
+                $stmt->execute([$book_id, $author_id]);
             }
 
             for ($i = 0; $i < $quantity; $i++){
-                $stmt = $con->prepare("INSERT INTO Book_Copy (book_id, is_available) VALUES (?,1)");
+                $stmt = $con->prepare("INSERT INTO book_copy (book_id, is_available) VALUES (?,1)");
                 $stmt->execute([$book_id]);
             }
 
             $con->commit();
             return $book_id;
         }catch (PDOException $e) {
-            $con->rollBack();
+             $con->rollBack();
             return false;
         }
     }

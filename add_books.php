@@ -1,7 +1,8 @@
 <?php
 session_start();
+
 if (empty($_SESSION['user_ID'])){
-  header('location:login.php');
+  header('location:index.php');
   exit();
 }
 
@@ -13,19 +14,15 @@ $genres = $con->viewGenres();
 $authors = $con->viewAuthors();
 
 if (isset($_POST['add_book'])){
-  $stitle = $_POST['bookTitle'];
+  echo 'fd';
+  $title = $_POST['bookTitle'];
   $isbn = $_POST['bookISBN'];
   $pubyear = $_POST['bookyear'];
   $quantity = $_POST['bookQuantity'];
+  $genre_ids = isset($_POST['bookGenres']) ? $_POST['bookGenres'] : [];
+  $author_ids = isset($_POST['bookAuthors']) ? $_POST['bookAuthors'] : [];
 
-  
-  $genre_ids = isset($_POST['bookGenres']) ? $_POST
-  ['bookGenres'] : [];
-
-  $author_ids = isset($_POST['bookAuthors']) ? $_POST
-  ['bookAuthors'] : [];
-
-  $result = $con->addBook($title, $isbn, $pubyear, $quantity, $genre_ids, $author_ids);
+  $result = $con->addBooks($title, $isbn, $pubyear, $quantity, $genre_ids, $author_ids);
 
   if ($result){
     $sweetAlertConfig = "<script>
@@ -57,8 +54,10 @@ if (isset($_POST['add_book'])){
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="./bootstrap-5.3.3-dist/css/bootstrap.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"> <!-- Correct Bootstrap Icons CSS -->
+<link rel="stylesheet" href="./package/dist/sweetalert2.css">
+
   <title>Books</title>
+
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -99,55 +98,56 @@ if (isset($_POST['add_book'])){
 <div class="container my-5 border border-2 rounded-3 shadow p-4 bg-light">
 
   <h4 class="mt-5">Add New Book</h4>
-  <form>
+  <form action="" method="POST">
+    
     <div class="mb-3">
       <label for="bookTitle" class="form-label">Book Title</label>
-      <input type="text" class="form-control" id="bookTitle" required>
+      <input type="text" name="bookTitle" class="form-control" id="bookTitle" required>
     </div>
     <div class="mb-3">
       <label for="bookISBN" class="form-label">ISBN</label>
-      <input type="text" class="form-control" id="bookISBN" required>
+      <input type="text" name="bookISBN" class="form-control" id="bookISBN" required>
     </div>
     <div class="mb-3">
       <label for="bookYear" class="form-label">Publication Year</label>
-      <input type="number" class="form-control" id="bookYear" required>
+      <input type="number" name="bookyear" class="form-control" id="bookYear" required>
     </div>
     <div class="mb-3">
       <label for="bookGenres" class="form-label">Genres</label>
 
 
       <select class="form-select" id="bookGenres" name="bookGenres[]" multiple required>
-        <?php foreach ($genres as $genre):?>
-        <option value="<?php echo $genre['genre_id']; ?>"><?php
-          echo htmlspecialchars($genre['genre_name']); 
-          ?></option>
+        <?php foreach ($genres as $genre): ?>
+        <option value=" <?php echo $genre['genre_id']; ?>">
+          <?php echo htmlspecialchars($genre['genre_name']); ?></option>
         <?php endforeach; ?>
         </select>
+        <small class="form-text text-muted">Hold down the Ctrl (Windows) or Command (Mac) key to select multiple genres.</small>
+        </div>
+ <div class="mb-3">
+      <label for="bookGenres" class="form-label">Authors</label>
 
         <select class="form-select" id="bookAuthors" name="bookAuthors[]" multiple required>
         <?php foreach($authors as $author):?>
         <option value="<?php echo $author['author_id']; ?>">
-          <?php echo htmlspecialchars($author['author_FN'] . ' ' . $author['author_LN'])
-          ?><option>
+          <?php echo htmlspecialchars($author['author_FN'] . ' ' . $author['author_LN'])?></option>
         <?php endforeach; ?>  
       </select>
-
-
-      <small class="form-text text-muted">Hold down the Ctrl (Windows) or Command (Mac) key to select multiple genres.</small>
+      
+      <small class="form-text text-muted">Hold down the Ctrl (Windows) or Command (Mac) key to select multiple authors.</small>
     </div>
     <div class="mb-3">
       <label for="bookQuantity" class="form-label">Quantity Available</label>
-      <input type="number" class="form-control" id="bookQuantity" required>
+      <input type="number" name="bookQuantity" class="form-control" id="bookQuantity" required>
     </div>
 
     <button type="submit" name="add_book" class="btn btn-primary">Add Book</button>
-  
     <script src="./package/dist/sweetalert2.js"></script>
     <?php echo $sweetAlertConfig; ?>
+
   </form>
 </div>
 <script src="./bootstrap-5.3.3-dist/js/bootstrap.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script> <!-- Add Popper.js -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script> <!-- Correct Bootstrap JS -->
+<!-- Correct Bootstrap JS -->
 </body>
 </html>
