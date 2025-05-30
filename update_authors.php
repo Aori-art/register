@@ -2,7 +2,7 @@
 require_once 'classes/database.php';
 $con = new database();
 session_start();
- 
+
 if(empty($id = $_POST['id'] ?? null)) {
     header("Location:index.php");
     exit;
@@ -11,18 +11,17 @@ if(empty($id = $_POST['id'] ?? null)) {
     $data = $con->viewAuthorsID($id);
     $data = $data ? $data[0] : [];
 }
- 
+
 $sweetAlertConfig = "";
- 
+
 if(isset($_POST['updateAuthor'])) {
     $authorFirstName = $_POST['authorFirstName'];
     $authorLastName = $_POST['authorLastName'];
     $authorBirthYear = $_POST['authorBirthYear'];
     $authorNationality = $_POST['authorNationality'];
- 
-    // Pass $id as the first argument
+
     $result = $con->updateAuthor($id, $authorFirstName, $authorLastName, $authorBirthYear, $authorNationality);
- 
+
     if($result) {
         $sweetAlertConfig = "
             <script>
@@ -53,7 +52,8 @@ if(isset($_POST['updateAuthor'])) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="./bootstrap-5.3.3-dist/css/bootstrap.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"> <!-- Correct Bootstrap Icons CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="./package/dist/sweetalert2.css"> <!-- Correct Bootstrap Icons CSS -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <title>Authors</title>
 </head>
@@ -94,8 +94,8 @@ if(isset($_POST['updateAuthor'])) {
     </div>
   </nav>
 <div class="container my-5 border border-2 rounded-3 shadow p-4 bg-light">
- 
- 
+
+
   <h4 class="mt-5">Update Existing Author</h4>
   <form method="post" action="" enctype="multipart/form-data" novalidate>
     <!-- Hidden field for id -->
@@ -131,10 +131,11 @@ if(isset($_POST['updateAuthor'])) {
     </div>
     <button type="submit" name="updateAuthor" class="btn btn-primary">Update Author</button>
   </form>
+  <script src="./package/dist/sweetalert2.js"></script>
   <?php echo $sweetAlertConfig; ?>
 </div>
 <script src="./bootstrap-5.3.3-dist/js/bootstrap.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script> <!-- Add Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script> <!-- Correct Bootstrap JS -->
 </body>
 </html>

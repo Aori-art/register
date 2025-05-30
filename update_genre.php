@@ -51,6 +51,7 @@ if(isset($_POST['updateGenre'])) {
   <link rel="stylesheet" href="./bootstrap-5.3.3-dist/css/bootstrap.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="./package/dist/sweetalert2.css">
   <title>Update Genre</title>
 </head>
 <body>
@@ -101,6 +102,7 @@ if(isset($_POST['updateGenre'])) {
     </div>
     <button type="submit" name="updateGenre" class="btn btn-primary">Update Genre</button>
   </form>
+  <script src="./package/dist/sweetalert2.js"></script>
   <?php echo $sweetAlertConfig; ?>
 </div>
 <script src="./bootstrap-5.3.3-dist/js/bootstrap.js"></script>
