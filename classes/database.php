@@ -152,6 +152,11 @@ class database {
             return $stmt->fetch(PDO::FETCH_ASSOC);
         }
 
+         function viewGenres() {
+            $con = $this->opencon();
+            return $con->query("SELECT * FROM Genres")->fetchAll();
+        }
+
     function updateGenre($id, $genreName) {
             $con = $this->opencon();
             try {

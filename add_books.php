@@ -1,29 +1,24 @@
 <?php
-require_once 'database.php';
-
-$message = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $title = $_POST['title'] ?? '';
-    $isbn = $_POST['isbn'] ?? '';
-    $pubYear = $_POST['pubYear'] ?? '';
-    $quantity = $_POST['quantity'] ?? '';
-
-
-    if ($title && $isbn && $pubYear && $quantity) {
-        $db = new database();
-        $result = $db->addBook($book_title, $book_isbn, $book_pubyear, $quantity_avail);
-
-        if ($result === true) {
-            $message = '<div class="alert alert-success">Book added successfully!</div>';
-        } else {
-            $message = '<div class="alert alert-danger">Error: ' . htmlspecialchars($result) . '</div>';
-        }
-    } else {
-        $message = '<div class="alert alert-warning">All fields are required.</div>';
-    }
+session_start();
+if (empty($_SESSION['user_ID'])){
+  header('location:login.php');
+  exit();
 }
+
+require_once('./classes/database.php');
+$con = new database();
+$sweetAlertConfig = "";
+
+$genres = $con->viewGenres();
+$authors = $con->viewAuthors();
 ?>
+
+
+<?php
+
+?>
+
+
 
 
 
@@ -91,16 +86,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
     <div class="mb-3">
       <label for="bookGenres" class="form-label">Genres</label>
-      <select class="form-select" id="bookGenres" multiple required>
-        <option value="Fiction">Fiction</option>
-        <option value="Non-Fiction">Non-Fiction</option>
-        <option value="Science">Science</option>
-        <option value="History">History</option>
-        <option value="Biography">Biography</option>
-        <option value="Fantasy">Fantasy</option>
-        <option value="Mystery">Mystery</option>
-        <!-- Add more genres as needed -->
+
+
+      <class="form-select" id="bookGenres" name=""bookGenres[]" multiple required>
+        <?php foreach ($genres as $genre):?>
+        <option value="<?php echo $genre['genre_id']; ?>"><?php
+          echo htmlspecialchars($genre['genre_name']); 
+          ?></option>
+        <?php endforeach; ?>
+        </select>
+
+        <select class="form-select" id="bookAuthors" name="bookAuthors[]" multiple required>
+        <?php foreach($authors as $author):?>
+        <option value="<?php echo $author['author_id']; ?>">
+          <?php echo htmlspecialchars($author['author_FN'] . ' ' . $author['author_LN'])
+          ?><option>
+        <?php endforeach; ?>  
       </select>
+
+
       <small class="form-text text-muted">Hold down the Ctrl (Windows) or Command (Mac) key to select multiple genres.</small>
     </div>
     <div class="mb-3">

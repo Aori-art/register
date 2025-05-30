@@ -95,7 +95,6 @@ if(isset($_POST['updateAuthor'])) {
   </nav>
 <div class="container my-5 border border-2 rounded-3 shadow p-4 bg-light">
 
-
   <h4 class="mt-5">Update Existing Author</h4>
   <form method="post" action="" enctype="multipart/form-data" novalidate>
     <!-- Hidden field for id -->
